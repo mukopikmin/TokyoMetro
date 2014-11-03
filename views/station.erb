@@ -1,0 +1,22 @@
+<h1><%= @title %></h1>
+<div id="map_basic" style="width: 600px; height: 300px;"></div>
+
+<h2>Selected station</h2>
+<%= @selected_station %>
+
+<h2>Current date</h2>
+<%= @date %>
+
+<h2>Exit list</h2>
+<ul>
+  <% @exits.each do |e| %>
+    <li><%= e["dc:title"] %></li>
+  <% end %>
+</ul>
+
+<h2>Passengers</h2>
+<ul>
+  <% @passengers.each do |p| %>
+    <li><%= p %></li>
+  <% end %>
+</ul>
