@@ -1,6 +1,6 @@
-function initialize() {
+function initialize(lat, lng) {
     /*----- ‰¼‚ÌˆÊ’u‚ð’è‹` -----*/
-    var latlng = new google.maps.LatLng(34,135);
+    var latlng = new google.maps.LatLng(lat, lng);
  
     /*----- ƒx[ƒXƒ}ƒbƒv‚ÌƒIƒvƒVƒ‡ƒ“’è‹` -----*/
     var myOptions = {
@@ -26,12 +26,12 @@ function initialize() {
     var geocoder = new google.maps.Geocoder();
  
     /*----- ƒWƒIƒR[ƒfƒBƒ“ƒO‚ðŽÀs -----*/
-    geocoder.geocode({
-        'address':'名古屋市'
-    },function(results, status){
-        if (status == google.maps.GeocoderStatus.OK) {
-            map.setCenter(results[0].geometry.location);
-            marker.setPosition(results[0].geometry.location);
-        }
-    });
+    // geocoder.geocode({
+    //     'address':'名古屋市'
+    // },function(results, status){
+    //     if (status == google.maps.GeocoderStatus.OK) {
+    //         map.setCenter(results[0].geometry.location);
+    //         marker.setPosition(results[0].geometry.location);
+    //     }
+    // });
 }

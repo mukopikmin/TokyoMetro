@@ -7,17 +7,6 @@ require 'uri'
 ACCESS_TOKEN = ENV["ACCESS_TOKEN"]
 API_ENDPOINT = "https://api.tokyometroapp.jp/api/v2/"
 
-DATAPOINTS = "datapoints"
-PLACES = "palces"
-
-POI = "ug:Poi"
-TRAIN = "odpt:Train"
-STATION = "odpt:Station"
-CONSUMER_KEY = "acl:consumerKey"
-TYPE = "rdf:type"
-TITLE = "dc:title"
-OPERATOR = "odpt:operator"
-
 get '/' do
   @date = Time.now
   @stations = get_stations
@@ -27,39 +16,51 @@ get '/' do
   erb :index
 end
 
-get '/:station' do |station|
-  @selected_station = station
+get '/:name' do
+  # name = "TokyoMetro.Ginza.AoyamaItchome"
+  name = params[:name]
+  @station = get_station(name)
+  @selected_station = name
   @date = Time.now
   @stations = get_stations
-  @passengers = get_passengers("TokyoMetro.Marunouchi.Tokyo")
-  @exits = get_exits("東京")
+  p get_passengers(@station["odpt:passengerSurvey"][0])[0]["odpt:passengerJourneys"]
+  @passenger = get_passengers(@station["odpt:passengerSurvey"][0])[0]["odpt:passengerJourneys"]
+  @exits = get_exits(@station["dc:title"])
   @title = "Tokyo metro sample app"
+  @lat = @station["geo:lat"]
+  @lng = @station["geo:long"]
   erb :station
 end
 
 def create_query(params)
   query = "?"
-  params.each{|key, value|
+  params.each do |key, value|
     query += key + "=" + value + "&"
-  }
+  end
   return query.chop
 end
 
+def get_station(station)
+  params = {"acl:consumerKey" => ACCESS_TOKEN, "rdf:type" => "odpt:Station", "owl:sameAs" => station}
+  url = API_ENDPOINT + "datapoints" + create_query(params)
+  return JSON.parse(open(url, :ssl_verify_mode => OpenSSL::SSL::VERIFY_NONE).read)[0]
+end
+
 def get_stations
-  params = {CONSUMER_KEY => ACCESS_TOKEN, TYPE => STATION}
-  url = API_ENDPOINT + DATAPOINTS + create_query(params)
+  params = {"acl:consumerKey" => ACCESS_TOKEN, "rdf:type" => "odpt:Station"}
+  url = API_ENDPOINT + "datapoints" + create_query(params)
   return JSON.parse(open(url, :ssl_verify_mode => OpenSSL::SSL::VERIFY_NONE).read)
 end
 
-def get_exits station
-  params = {CONSUMER_KEY => ACCESS_TOKEN, TYPE => POI, TITLE => URI.encode(station)}
-  url = API_ENDPOINT + DATAPOINTS + create_query(params)
+def get_exits(station)
+  params = {"acl:consumerKey" => ACCESS_TOKEN, "rdf:type" => "ug:Poi", "dc:title" => URI.encode(station)}
+  url = API_ENDPOINT + "datapoints" + create_query(params)
   return JSON.parse(open(url, :ssl_verify_mode => OpenSSL::SSL::VERIFY_NONE).read)
 end
 
-def get_passengers station_id
-  params = {CONSUMER_KEY => ACCESS_TOKEN}
-  url = API_ENDPOINT + DATAPOINTS + '/odpt.Station:' + station_id + create_query(params)
+def get_passengers(station)
+  params = {"acl:consumerKey" => ACCESS_TOKEN, "rdf:type" => "odpt:PassengerSurvey", "owl:sameAs" => station}
+  url = API_ENDPOINT + "datapoints" + create_query(params)
   puts url
   return JSON.parse(open(url, :ssl_verify_mode => OpenSSL::SSL::VERIFY_NONE).read)
 end

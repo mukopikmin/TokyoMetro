@@ -1,5 +1,5 @@
 <h1><%= @title %></h1>
-<div id="map_basic" style="width: 600px; height: 300px;"></div>
+<div id="map_canvas" style="width:800px; height:600px"></div>
 
 <h2>Selected station</h2>
 <%= @selected_station %>
@@ -15,8 +15,34 @@
 </ul>
 
 <h2>Passengers</h2>
-<ul>
-  <% @passengers.each do |p| %>
-    <li><%= p %></li>
-  <% end %>
-</ul>
+<%= @passenger %>
+
+<script type="text/javascript">
+function initialize() {
+  var myOptions = {
+    zoom: 17,
+    center: new google.maps.LatLng(<%= @lat %>, <%= @lng %>),
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+  var map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
+  var markers = [
+      <% @exits.each do |e| %>
+        ['<%= e["dc:title"] %>', <%= e["geo:lat"] %>, <%= e["geo:long"] %>],
+      <% end %>
+      ];
+  for (var i = 0; i < markers.length; i++) {
+    var name = markers[i][0];
+    var latlng = new google.maps.LatLng(markers[i][1],markers[i][2]);
+    createMarker(name,latlng,map);
+    }
+}
+function createMarker(name,latlng,map){
+  var infoWindow = new google.maps.InfoWindow();
+  var marker = new google.maps.Marker({position: latlng,map: map});
+  google.maps.event.addListener(marker, 'click', function() {
+      infoWindow.setContent(name);
+      infoWindow.open(map,marker);   
+      });
+} 
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>

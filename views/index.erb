@@ -1,34 +1,13 @@
-<script type="text/javascript">
-  selectStation = function() {
-    alert(document.select.data.value);
-  }
-</script>
-
 <h1><%= @title %></h1>
-<div id="map_basic" style="width: 600px; height: 300px;"></div>
 
 <h2>Current date</h2>
 <%= @date %>
 
 <h2>Station list</h2>
-<select onChange="selectStation();">
+<ul>
   <% @stations.each do |s| %>
-    <option value=<%= s["dc:title"] %>>
-      <%= s["dc:title"] %>
-    </option>
-  <% end %>
-</select>
-
-<h2>Passengers</h2>
-<ul>
-  <% @passengers.each do |p| %>
-    <li><%= p %></li>
-  <% end %>
-</ul>
-
-<h2>Exit list</h2>
-<ul>
-  <% @exits.each do |e| %>
-    <li><%= e["dc:title"] %></li>
+    <li>
+      <a href="/<%= s['owl:sameAs'].split(':')[1] %>"><%= s["dc:title"] %>(<%= s['odpt:railway'].split('.')[2] %>)</a>
+    </li>
   <% end %>
 </ul>
