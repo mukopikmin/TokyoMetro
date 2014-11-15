@@ -1,13 +1,15 @@
 <h1><%= @title %></h1>
 
-<h2>Current date</h2>
-<%= @date %>
-
 <h2>Station list</h2>
-<ul>
-  <% @stations.each do |s| %>
-    <li>
-      <a href="/<%= s['owl:sameAs'].split(':')[1] %>"><%= s["dc:title"] %>(<%= s['odpt:railway'].split('.')[2] %>)</a>
-    </li>
-  <% end %>
-</ul>
+<table>
+  <tr>
+	<% for i in 0 .. @stations.length - 1 %>
+	  <td>
+        <a href="/<%= @stations[i]['owl:sameAs'].split(':')[1] %>"><%= @stations[i]["dc:title"] %>(<%= @stations[i]['odpt:railway'].split('.')[2] %>)</a>
+      </td>
+      <% if ((i + 1) % 5) == 0 %>
+        </tr><tr>
+      <% end %>
+    <% end %>
+  </tr>
+</table>

@@ -1,11 +1,8 @@
 <h1><%= @title %></h1>
-<div id="map_canvas" style="width:800px; height:600px"></div>
+<div id="map_canvas"></div>
 
 <h2>Selected station</h2>
 <%= @selected_station %>
-
-<h2>Current date</h2>
-<%= @date %>
 
 <h2>Exit list</h2>
 <ul>
@@ -21,7 +18,7 @@
 function initialize() {
   var myOptions = {
     zoom: 17,
-    center: new google.maps.LatLng(<%= @lat %>, <%= @lng %>),
+    center: new google.maps.LatLng(<%= @station["geo:lat"] %>, <%= @station["geo:long"] %>),
     mapTypeId: google.maps.MapTypeId.ROADMAP
     };
   var map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);

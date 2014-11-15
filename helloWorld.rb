@@ -23,12 +23,9 @@ get '/:name' do
   @selected_station = name
   @date = Time.now
   @stations = get_stations
-  p get_passengers(@station["odpt:passengerSurvey"][0])[0]["odpt:passengerJourneys"]
   @passenger = get_passengers(@station["odpt:passengerSurvey"][0])[0]["odpt:passengerJourneys"]
   @exits = get_exits(@station["dc:title"])
   @title = "Tokyo metro sample app"
-  @lat = @station["geo:lat"]
-  @lng = @station["geo:long"]
   erb :station
 end
 
