@@ -11,33 +11,26 @@ TITLE = "YORIMICHI SEARCH"
 get '/' do
   @railways = get_railways
   @stations = get_stations
-  @passengers = get_passengers("TokyoMetro.Marunouchi.Tokyo")
-  @exits = get_exits("東京")
   @title = TITLE
   erb :index
 end
 
 get '/:station' do
-  name = params[:station]
-  @station = get_station(name)
-  @selected_station = name
-  @date = Time.now
-  @stations = get_stations
-  p "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-  p @passenger = get_passengers(@station["odpt:passengerSurvey"][0])[0]["odpt:passengerJourneys"]
+  @station = get_station(params[:station])
+  @passenger = get_passengers(@station["odpt:passengerSurvey"][0])[0]["odpt:passengerJourneys"].to_i / 500
   @exits = get_exits(@station["dc:title"])
   @title = TITLE
   erb :station
 end
 
-get '/:station/:exit' do
-  station = params[:station]
-  exit = params[:exit]
-  @station = get_station(station)
-  @exit = get_exit(exit)
-  @title = TITLE
-  erb :exit
-end
+# get '/:station/:exit' do
+#   station = params[:station]
+#   exit = params[:exit]
+#   @station = get_station(station)
+#   @exit = get_exit(exit)
+#   @title = TITLE
+#   erb :exit
+# end
 
 def create_query(params)
   query = "?"
@@ -48,7 +41,7 @@ def create_query(params)
 end
 
 def get_station(station)
-  params = {"acl:consumerKey" => ACCESS_TOKEN, "rdf:type" => "odpt:Station", "owl:sameAs" => station}
+  params = {"acl:consumerKey" => ACCESS_TOKEN, "rdf:type" => "odpt:Station", "odpt:stationCode" => station}
   url = API_ENDPOINT + "datapoints" + create_query(params)
   return JSON.parse(open(url, :ssl_verify_mode => OpenSSL::SSL::VERIFY_NONE).read)[0]
 end

@@ -1,9 +1,16 @@
-<h2>Station list</h2>
+<div style="text-align: center;">
+  <h2>効率のよい寄り道をしましょう</h2>
+  寄り道して時間をつぶす駅を選んでください。<br>
+  人が多い駅は候補地をたくさん表示しています。<br>
+  人が少ない駅は近くの寄り道ポイントだけ表示するのでのんびりしてください。
+</div>
+
+<h2>駅一覧</h2>
 <table>
   <tr>
 	<% for i in 0 .. @stations.length - 1 %>
 	  <td>
-        <a href="/<%= @stations[i]['owl:sameAs'].split(':')[1] %>"><%= @stations[i]["dc:title"] %>(<%= @stations[i]['odpt:railway'].split('.')[2] %>)</a>
+        <a href="/<%= @stations[i]['odpt:stationCode'] %>"><%= @stations[i]["dc:title"] %>(<%= @stations[i]['odpt:railway'].split('.')[2] %>)</a>
       </td>
       <% if ((i + 1) % 5) == 0 %>
         </tr><tr>
